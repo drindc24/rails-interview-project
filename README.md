@@ -37,6 +37,10 @@ To make sure it's all working,
 
 You should see this same information.
 
-## Submitting your project
+## Sample URLs
 
-Fork this repo and give us access to your fork. If you need to add any additional instructions to the README please put them at the very top of that file and mention. Expect to discuss your design decisions during the interview.
+No params: `/api/v1/questions?tenant_key=[TENANT_KEY]`  
+With search params: `/api/v1/questions?tenant_key=[TENANT_KEY]?search_q[SEARCH_QUERY]`  
+With page params: `/api/v1/questions?tenant_key=[TENANT_KEY]?search_q[SEARCH_QUERY]?page=[PAGE_NUMBER]`
+  
+*Note: search and page params are optional and can be used independently of each other*
