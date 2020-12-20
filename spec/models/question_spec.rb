@@ -14,4 +14,26 @@ RSpec.describe Question do
       end
     end
   end
+
+  describe '#search' do
+    let!(:question_1){ create(:question, title: 'Number one') }
+    let!(:question_2){ create(:question, title: 'Number two') }
+    let!(:question_3){ create(:question, title: 'Number three') }
+
+    context 'has search query param' do
+      subject { described_class.search('one') }
+
+      it 'should return the appropriate question' do
+        is_expected.to contain_exactly(question_1)
+      end
+    end
+
+    context 'does not have search query param' do
+      subject { described_class.search('') }
+
+      it 'should return the appropriate question' do
+        is_expected.to contain_exactly(question_1, question_2, question_3)
+      end
+    end
+  end
 end

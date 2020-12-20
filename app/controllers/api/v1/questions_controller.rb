@@ -5,7 +5,9 @@ module Api
       after_action :increment_request_count, only: [:index]
 
       def index
-        render json: QuestionBlueprint.render(Question.all), status: :ok
+        questions = Question.search(params[:search_q])
+                            .page(params[:page])
+        render json: QuestionBlueprint.render(questions), status: :ok
       end
 
       private
