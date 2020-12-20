@@ -1,7 +1,8 @@
 module Api
   module V1
     class QuestionsController < ActionController::API
-      before_action :validate_api_key
+      before_action :validate_api_key, only: [:index]
+      after_action :increment_request_count, only: [:index]
 
       def index
         render json: QuestionBlueprint.render(Question.all), status: :ok
@@ -19,6 +20,10 @@ module Api
 
       def render_unauthorized(message)
         render json: { message: message }, status: :unauthorized
+      end
+
+      def increment_request_count
+        @tenant.increment!(:request_count) if @tenant
       end
     end
   end

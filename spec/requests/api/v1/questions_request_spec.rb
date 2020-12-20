@@ -14,6 +14,7 @@ RSpec.describe Api::V1::QuestionsController, type: :request do
     describe 'has a valid tenant api key' do
       before do
         get '/api/v1/questions', params: { tenant_key: tenant.api_key }
+        tenant.reload
       end
 
       it 'should have a success http status' do
@@ -26,6 +27,10 @@ RSpec.describe Api::V1::QuestionsController, type: :request do
         expect(json_response[0]['user_name']).to eq user.name
         expect(json_response[0]['answers'].count).to eq 3
       end
+
+      it 'should increment request count attr for tenant' do
+        expect(tenant.request_count).to eq 1
+      end
     end
 
     describe 'does not have a valid tenant api key' do
@@ -36,6 +41,10 @@ RSpec.describe Api::V1::QuestionsController, type: :request do
       it 'should have not have a success http status' do
         expect(response).to have_http_status :unauthorized
       end
+
+      it 'should NOT increment request count attr for tenant' do
+        expect(tenant.request_count).to eq 0
+      end
     end
 
     describe 'does not have a tenant api key at all' do
@@ -45,6 +54,10 @@ RSpec.describe Api::V1::QuestionsController, type: :request do
 
       it 'should have not have a success http status' do
         expect(response).to have_http_status :unauthorized
+      end
+
+      it 'should NOT increment request count attr for tenant' do
+        expect(tenant.request_count).to eq 0
       end
     end
   end

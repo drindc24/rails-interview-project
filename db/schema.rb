@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160512220935) do
+ActiveRecord::Schema.define(version: 2020_12_20_193530) do
 
   create_table "answers", force: :cascade do |t|
     t.string   "body",        null: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20160512220935) do
     t.string   "api_key",    null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "request_count", default: 0
   end
 
   create_table "users", force: :cascade do |t|
