@@ -8,21 +8,44 @@ RSpec.describe Api::V1::QuestionsController, type: :request do
     let!(:answer_2){ create(:answer, question: question) }
     let!(:answer_3){ create(:answer, question: question) }
     let!(:answer_4){ create(:answer) }
+    let!(:tenant){ create(:tenant) }
     let(:json_response){ JSON.parse(response.body) }
 
-    before do
-      get '/api/v1/questions'
+    describe 'has a valid tenant api key' do
+      before do
+        get '/api/v1/questions', params: { tenant_key: tenant.api_key }
+      end
+
+      it 'should have a success http status' do
+        expect(response).to have_http_status :success
+      end
+
+      it 'should have the correct data' do
+        expect(json_response[0]['title']).to eq question.title
+        expect(json_response[0]['private']).not_to be_truthy
+        expect(json_response[0]['user_name']).to eq user.name
+        expect(json_response[0]['answers'].count).to eq 3
+      end
     end
 
-    it 'should have a success http status' do
-      expect(response).to have_http_status :success
+    describe 'does not have a valid tenant api key' do
+      before do
+        get '/api/v1/questions', params: { tenant_key: '12345' }
+      end
+
+      it 'should have not have a success http status' do
+        expect(response).to have_http_status :unauthorized
+      end
     end
 
-    it 'should have the correct data' do
-      expect(json_response[0]['title']).to eq question.title
-      expect(json_response[0]['private']).not_to be_truthy
-      expect(json_response[0]['user_name']).to eq user.name
-      expect(json_response[0]['answers'].count).to eq 3
+    describe 'does not have a tenant api key at all' do
+      before do
+        get '/api/v1/questions'
+      end
+
+      it 'should have not have a success http status' do
+        expect(response).to have_http_status :unauthorized
+      end
     end
   end
 end
